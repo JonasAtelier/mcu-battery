@@ -1,0 +1,39 @@
+# Read by ESP-IDF as a component Kconfig, and by both forges' `make menu`
+# (scripts/menu.py) for the BATTERY_<CHIP> prompts. stm-forge has no Kconfig
+# build step: its build only sees the defconfig lines, as
+# -DCONFIG_BATTERY_<CHIP>=1 or 0. Every chip is off unless set.
+menuconfig BATTERY
+    bool "Battery monitor subsystem"
+    default y
+    help
+        Chips that know they sit on a battery: fuel gauges and cell
+        monitors. A plain shunt and bus-voltage monitor (INA2xx) is
+        mcu-powermon's. The core: struct battery_dev, battery_read(),
+        battery_clear_alerts() and the battery_* log helpers. Pick the
+        chip drivers you need below; none is built by default.
+
+if BATTERY
+
+    config BATTERY_MAX17048
+        bool "Maxim MAX17048 single-cell fuel gauge (I2C)"
+        default n
+        help
+            Build the MAX17048 driver: max17048_init() and friends, the
+            API of esp-max17048-fuelgauge, and max17048_battery().
+
+    config BATTERY_BQ769X0
+        bool "TI BQ76920 / BQ76930 / BQ76940 cell monitor (I2C)"
+        default n
+        help
+            Build the BQ769x0 driver for all three parts: bq769x0_init()
+            and friends, the API of esp-bq769x0-bms, and
+            bq769x0_battery(). The part is told apart by its cell count.
+
+    config BATTERY_DEBUG
+        bool "battery_dbg() lines"
+        default n
+        help
+            STM32 HAL only: compile battery_dbg() lines in. On ESP-IDF
+            battery_dbg() is ESP_LOGD and the log level decides.
+
+endif # BATTERY
