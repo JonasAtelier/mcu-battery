@@ -27,7 +27,8 @@ the ESP-IDF component directory `battery` as well.
 > **Hardware unverified.** Host tests use simulated devices and platform stubs.
 > Nothing here has run on a physical chip or a real pack.
 
-[Supported hardware](#supported-hardware) · [Install](#install) ·
+[Supported hardware](#supported-hardware) · [Drivers](#drivers) ·
+[Install](#install) ·
 [Quick start](#quick-start) · [Examples](#examples) ·
 [Documentation](#documentation) · [Tests](#tests)
 
@@ -35,10 +36,10 @@ the ESP-IDF component directory `battery` as well.
 
 Both drivers support both platforms. Enable only the ones you need.
 
-| Chip | Bus | Kind | Reports |
-|---|---|---|---|
-| **MAX17048** | I2C, 0x36 | fuel gauge, one lithium cell | cell voltage, state of charge, charge rate |
-| **BQ76920 / BQ76930 / BQ76940** | I2C, 0x08 or 0x18, CRC or not | cell monitor and protector, 3 to 15 cells | every cell, pack, current through a shunt, up to three thermistors; balancing, protection FETs |
+| Chip | Bus | Notes |
+|---|---|---|
+| **MAX17048** | I2C | fuel gauge, one lithium cell |
+| **BQ76920 / BQ76930 / BQ76940** | I2C | cell monitor and protector, 3 to 15 cells |
 
 **Where the line sits.** A chip belongs here when it knows it is on a
 battery: it models the cell's charge (a gauge), or it measures cells one by
@@ -47,6 +48,34 @@ as the INA226 stays in [mcu-powermon](https://github.com/JonasAtelier/mcu-powerm
 even when it is wired across a pack. See [chip reference](docs/chips.md#where-the-line-sits).
 
 Wiring is in the [wiring guide](docs/hardware.md).
+
+## Drivers
+
+<details><summary><b>MAX17048</b> — I2C</summary>
+
+- Bus: I2C, 0x36
+- Kind: fuel gauge, one lithium cell
+- Reports: cell voltage, state of charge, charge rate
+- Examples: ESP-IDF [max17048](examples/esp/max17048/) · STM32 HAL
+  [max17048](examples/stm/max17048/main.c)
+- Chip reference: [MAX17048](docs/chips.md#max17048)
+
+</details>
+
+<details><summary><b>BQ76920 / BQ76930 / BQ76940</b> — I2C</summary>
+
+- Bus: I2C, 0x08 or 0x18, CRC or not
+- Kind: cell monitor and protector, 3 to 15 cells
+- Reports: every cell, pack, current through a shunt, up to three thermistors;
+  balancing, protection FETs
+- Examples: ESP-IDF [bq769x0](examples/esp/bq769x0/) · STM32 HAL
+  [bq769x0](examples/stm/bq769x0/main.c)
+- **Lithium safety is yours.** The BQ769x0 can switch a pack; read the
+  [safety notes](docs/chips.md#safety) before wiring its FETs.
+- Chip reference: [BQ76920 / BQ76930 /
+  BQ76940](docs/chips.md#bq76920--bq76930--bq76940)
+
+</details>
 
 ## Install
 
@@ -144,10 +173,7 @@ codes.
 
 ## Examples
 
-| Chip | ESP-IDF | STM32 HAL |
-|---|---|---|
-| MAX17048 | [max17048](examples/esp/max17048/) | [max17048](examples/stm/max17048/main.c) |
-| BQ769x0 | [bq769x0](examples/esp/bq769x0/) | [bq769x0](examples/stm/bq769x0/main.c) |
+Each driver's examples are listed under [Drivers](#drivers).
 
 The ESP-IDF examples are the original repos' examples plus a battery API
 read; `sdkconfig.defaults` turns each one's chip on. With ESP-IDF activated,
@@ -169,8 +195,6 @@ setup and logging retargeting provided by you.
 - **Blocking bus calls:** no interrupts or DMA, and no waits.
 - **One task per handle:** the calls are not locked against each other.
 - **No bus setup:** pins, clocks and speed are the app's.
-- **Lithium safety is yours.** The BQ769x0 can switch a pack; read the
-  [safety notes](docs/chips.md#safety) before wiring its FETs.
 
 ## Documentation
 
