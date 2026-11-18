@@ -6,6 +6,13 @@ Read a lithium battery over I2C. The MAX17048 estimates voltage and charge for o
 
 **Before using BQ769x0 protection**, set limits for your pack and test with a bench supply and resistive load. Read the protection notes before wiring the charge or discharge switches. [Battery safety](docs/chips.md#safety)
 
+## Contents
+
+- [Quick start](#quick-start)
+- [Drivers and examples](#drivers-and-examples)
+- [Using the library in your project](#using-the-library-in-your-project)
+- [License](#license)
+
 ## Quick start
 
 Use a MAX17048 breakout and one lithium cell. Check connector polarity and set the I2C pins to match your board.
@@ -26,10 +33,19 @@ idf.py build flash monitor
 
 The monitor shows cell voltage and estimated charge. Give the gauge a few minutes to settle after power-up.
 
+## Drivers and examples
+
+Both drivers return a `battery_sample` through `battery_read()`. Use the BQ769x0 header for individual cell readings and protection settings. The pack examples configure protection thresholds and leave the charge and discharge switches alone. [Shared API](include/battery.h)
+
+| Chip | Driver header | ESP-IDF project | STM32 HAL example |
+|---|---|---|---|
+| [MAX17048](docs/chips.md#max17048) | [max17048.h](include/max17048.h) | [Single-cell fuel gauge](examples/esp/max17048/) | [Single-cell fuel gauge](examples/stm/max17048/main.c) |
+| [BQ76920, BQ76930, BQ76940](docs/chips.md#bq76920--bq76930--bq76940) | [bq769x0.h](include/bq769x0.h) | [BQ76930 six-cell pack](examples/esp/bq769x0/) | [BQ76930 six-cell pack](examples/stm/bq769x0/main.c) |
+
 ## Using the library in your project
 
 - Add the component and enable the driver for your hardware. [Installation and build options](docs/installation.md)
-- Start from an example for your chip. The STM32 examples fit into a project with board setup already in place. [ESP-IDF examples](examples/esp/) · [STM32 examples](examples/stm/)
+- Open the ESP-IDF project for your hardware, or copy the STM32 example into a project with board setup already in place. [All ESP-IDF examples](examples/esp/) · [All STM32 examples](examples/stm/)
 - Look up calls and chip-specific settings. [API usage](docs/usage.md) · [Hardware reference](docs/chips.md)
 
 To run the simulated tests on your computer, run `make -C test test` from the library root. [Test requirements and coverage](docs/development.md)
@@ -44,3 +60,5 @@ To run the simulated tests on your computer, run `make -C test test` from the li
        width="520">
   <br><sub>Adafruit MAX17048 breakout &mdash; photo <a href="https://www.adafruit.com/product/5580">Adafruit Industries</a></sub>
 </p>
+
+[Browse the workshop catalog · ESP32 and STM32 drivers](https://github.com/JonasAtelier/jonas-atelier-libraries#esp32-and-stm32-drivers)
