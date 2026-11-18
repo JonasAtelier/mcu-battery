@@ -35,7 +35,8 @@ examples/
   stm/<chip>/               STM32 snippets: max17048, bq769x0
 docs/                       the five guides; the datasheets here are gitignored
 assets/                     README and wiring pictures
-CMakeLists.txt              ESP-IDF only; stm-forge globs src/**/*.c instead
+CMakeLists.txt              ESP-IDF component; elsewhere a static library for add_subdirectory(); stm-forge globs src/**/*.c instead
+                            the static library's options are Kconfig's bool entries, found by the type line directly under each `config`
 Kconfig                     BATTERY and BATTERY_<CHIP>, for ESP-IDF and both forges' menus
 idf_component.yml           ESP-IDF component manifest
 LICENSE                     MIT
@@ -116,7 +117,8 @@ data, so the bus layer knows nothing of them.
 3. Cite every register value to its datasheet section or table in
    `src/foo/foo_regs.h`, and hold the conversions in a `test_foo_math.c`.
 4. Add `CONFIG_BATTERY_FOO` to:
-   - the no-chip checks in `CMakeLists.txt` and `src/battery_port_stm.c`;
+   - the no-chip checks in `CMakeLists.txt` (its ESP-IDF part; the
+     `add_subdirectory()` part reads `Kconfig`) and `src/battery_port_stm.c`;
    - the HAL module `#error` in `src/battery_priv.h`;
    - its sources in `CMakeLists.txt`;
    - `Kconfig`;
