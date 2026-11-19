@@ -1,6 +1,6 @@
 version: "0.1.0"
 description: mcu-battery battery monitor subsystem for ESP-IDF and STM32 HAL, with the MAX17048 fuel gauge and the BQ76920/30/40 cell monitors.
-license: MIT
+license: GPL-3.0-only
 dependencies:
   idf:
     version: ">=5.2"
